@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assignment_1</title>
+</head>
+<body>
+
+    <p>Click me button to display an alert box.</p>
+
+    <!--description call function notify() for requesting input value
+        Function notify() will be called when button is clicked and then inputting is begin
+    -->
+    <button onclick="notify()">Try It</button>
+
+    <!--description fill in HTML Paragraphs
+        The results will be filled in HTML Paragraphs following each its id when inputitng is finish
+    -->
+    <p id="name" stye="font-weight:bold"></p>
+    <p id="city" stye="font-weight:bold"></p>
+    <p id="mobile" stye="font-weight:bold"></p>
+    <p id="age" stye="font-weight:bold"></p>
+    <p id="age_is" stye="font-weight:bold"></p>
+    <p id="job" stye="font-weight:bold"></p>
+    <p id="email" stye="font-weight:bold"></p>
+    <p id="hobby" stye="font-weight:bold"></p>
+    <p id="note" stye="font-weight:bold"></p>
+
+    <!--description show button "Bước tiếp theo"
+        The  button as "Buoc tiep theo" will be showed out when inputting is finish
+    -->
+    <div id="btn_next" style="display:none;">
+        <button>Bước tiếp theo</button>
+    </div>
+
+    <script>
+        function notify(){
+            
+            alert("Chào mừng bạn đến với ứng dụng JavaScript đầu tiên"); // Show 'Chào mừng bạn đến với ứng dụng JavaScript đầu tiên'
+
+            /*
+            * @description Requesting input name
+            * @input name
+            * @Fill name in HTML Paragraphs following id name
+            */
+            (function input_name(){
+                var temp = prompt("Hãy nhập tên của bạn");
+                document.getElementById("name").innerHTML = "Tên: " + temp;
+            })();
+
+            /*
+            * @description Requesting input city
+            * @input city
+            * @Fill city in HTML Paragraphs following id city
+            */
+            (function input_city(){
+                var temp = prompt("Hãy nhập thành phố bạn đang sống");
+                document.getElementById("city").innerHTML = "Thành phố: " + temp;
+            })();
+
+            /*
+            * @description Requesting input mobie number
+            * @input mobile number
+            * @Fill mobile number in HTML Paragraphs following id mobile
+            */
+            (function input_mobile(){
+                var temp = prompt("Hãy nhập số điện thoại của bạn");
+                document.getElementById("mobile").innerHTML = "Số điện thoại: " + temp;
+            })();
+
+            //TODO: Declare a age variable
+            var age = 0;
+            
+            //TODO: Declare a present_year variable and get present of year
+            var present_year = new Date().getFullYear();
+
+            /*
+            * @description Requesting input age
+            * @input age
+            * @If inputted year is greater than present of year, have to request inputting again
+            * @Fill age in HTML Paragraphs following id age
+            * @Update age's variable to inputted year of birth
+            */
+            (function input_age(){
+                var temp = prompt("Hãy nhập năm sinh");
+                while(temp > present_year){
+                    temp = prompt("Hãy nhập lại năm sinh");
+                }
+                document.getElementById("age").innerHTML = "Năm sinh: " + temp;
+                age = temp;
+            })();
+
+            /*
+            * @description Calculating age to present year
+            * @param {number} age_t
+            * @age equal to present_year minus inputted year of birth
+            * @returns {number} age
+            */
+            function age_is(age_t){
+                var temp = present_year-age_t;
+                return temp;
+            };
+            
+            //TODO: Fill present age in HTML Paragraphs following id age_is
+            document.getElementById("age_is").innerHTML = "Tuổi hiện tại: " + age_is(age);
+
+            /*
+            * @description Requesting input job
+            * @input job
+            * @Fill job in HTML Paragraphs following id job
+            */
+            (function input_job(){
+                var temp = prompt("Hãy nhập công việc hiện tại của bạn");
+                document.getElementById("job").innerHTML = "Công việc: " + temp;
+            })();
+
+            /*
+            * @description Requesting input email
+            * @input email
+            * @Fill email in HTML Paragraphs following id email
+            */
+            (function input_email(){
+                var temp = prompt("Hãy nhập email của bạn");
+                document.getElementById("email").innerHTML = "Email: " + temp;
+            })();
+
+            /*
+            * @description Requesting input hobby
+            * @input hobby
+            * @Fill hobby in HTML Paragraphs following id hobby
+            */
+            (function input_hobby(){
+                var temp = prompt("Hãy nhập sở thích của bạn");
+                document.getElementById("hobby").innerHTML = "Sở thích: " + temp;
+            })();
+
+            /*
+            * @description Requesting input note
+            * @input note
+            * @Fill note in HTML Paragraphs following id note
+            */
+            (function input_note(){
+                var temp = prompt("Hãy nhập ghi chú");
+                document.getElementById("note").innerHTML = "Ghi chú: " + temp;
+            })();
+
+            //TODO: Showing button of "Buoc tiep theo"
+            document.getElementById("btn_next").style.display = "block";
+        }
+    </script>
+
+</body>
+</html>
