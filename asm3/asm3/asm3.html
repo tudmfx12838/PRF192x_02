@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <title>asm3</title>
+<style>
+
+
+
+</style>
+
+</head>
+<body>
+
+    <div class="container-fluid text-center" id="inputForm">
+        <h1 class="bg-primary text-white rounded">Class Marksheet</h1>
+        <label for="name" class ="col-6 col-sm-2">Họ Tên: </label><input class ="col-6 col-sm-3" id="name" type="text"><br>
+        <label for="math" class ="col-6 col-sm-2">Điểm Toán: </label><input class ="col-6 col-sm-3" id="math" type="number"><br>
+        <label for="physical" class ="col-6 col-sm-2">Điểm Lý: </label><input class ="col-6 col-sm-3" id="physical" type="number"><br>
+        <label for="chemistry" class ="col-6 col-sm-2">Điểm Hóa: </label><input class ="col-6 col-sm-3" id="chemistry" type="number"><br><br>
+        <input type="button" class="btn btn-secondary" id="inputValue" value="Nhập">
+    </div>
+    <br>
+
+    <div class="container-fluid text-center">
+        <table id="table" class="container text-center table-responsive-sm table-bordered">
+            <tr>
+                <th class ="col-1 col-sm-1">STT</th>
+                <th class ="col-3 col-sm-3">Họ tên</th>
+                <th class ="col-2 col-sm-2">Toán</th>
+                <th class ="col-2 col-sm-2">Lý</th>
+                <th class ="col-2 col-sm-2">Hóa</th>
+                <th class ="col-2 col-sm-2">Trung Bình</th>
+            </tr>
+        </table>
+        <br>
+        <input type="button" class="btn btn-secondary col-12 col-sm-4 col-md-3" value="Tính điểm trung bình" id="calculateAverageScore">
+        <input type="button" class="btn btn-success col-12 col-sm-4 col-md-3" value="Xác định học sinh giỏi" id="identifyGoodStudent">
+    </div>
+    <br>
+    <div class="container-fluid text-center">
+        <input type="button" class="btn btn-danger" value="Chọn" id="selectAndDelete">
+        <input type="button" class="btn btn-danger" value="Hủy" id="cancel">
+    </div>
+    <br>
+
+
+    <script src="./Js/jquery.js"></script>
+    <script>
+        
+        /**
+        * @description An object testScore to store student's namme and score
+        * @Consist of 5 array as name, math, physical, chemistry, diemTB
+        */
+        var testScore = { 
+                        name: [],
+                        math: [],
+                        physical: [],
+                       chemistry: [],
+                       diemTB:[]
+        };
+
+        /**
+        * @description a counter variable
+        * @will  be increated to 1 when input a student's information
+        * @will  be decreated to 1 when delete a student's information
+        * */
+        var counterSTT=0;
+       
+        //hide button as "Hủy" until it's be called by clicking button as "Chọn"
+        $("#cancel").hide();
+        
+        $(document).ready(function(){
+        
+        /**
+        *description call inputValue() to get value from input and upadate to object testScore when button as Nhập is clicked.
+        */
+            $("#inputValue").click(function(){
+                //select_flag is zero that's mean feature as select and delete are not actived
+                if(select_flag==0){
+                    //if input's text is blank, aleart request full input
+                    if(($("#name").val()=="")||($("#math").val()=="")||($("#physical").val()=="")||($("#chemistry").val()=="")){
+                        alert("Hãy nhập đầy đủ thông tin Họ Tên, Điểm Toán, Điểm Lý, Điểm Hóa");
+                    }else{
+                        //update value to object testScore
+                        testScore.name.push($("#name").val());
+                        testScore.math.push(parseFloat($("#math").val()));
+                        testScore.physical.push(parseFloat($("#physical").val()));
+                        testScore.chemistry.push(parseFloat($("#chemistry").val()));
+
+                        //TODO: Remove value after inputting
+                        $("#name").val("");
+                        $("#math").val("");
+                        $("#physical").val("");
+                        $("#chemistry").val("");
+
+                        //update value form object testScore to table
+                        $("#table").append(
+                            "<tr>"+
+                            "<td>" + (counterSTT+1) + "</td>" +
+                            "<td>" + testScore.name[counterSTT] + "</td>"+
+                            "<td>" + testScore.math[counterSTT] + "</td>"+
+                            "<td>" + testScore.physical[counterSTT] + "</td>"+
+                            "<td>" + testScore.chemistry[counterSTT] + "</td>"+
+                            "<td>" + "?" + "</td>"+
+                            "</tr>"
+                        );
+
+                        //TODO: increase to 1 when input a student's information done
+                        counterSTT++;
+                    }
+                }else{
+                    //select_flag is not zero that's mean feature as select and delete are being actived
+                    //inform that click button as "Hủy" to use another feature
+                    alert("Vui lòng bấm <Hủy> để sử dụng các chức năng khác");
+                }
+              });
+
+            /**
+            *description calculate student's average Score when button as "Tính điểm trung bình" is clicked
+            */
+            $("#calculateAverageScore").click(function(){
+                //select_flag is zero that's mean feature as select and delete are not actived
+                if(select_flag==0){    
+                    //counter is zero that's mean table blank 
+                    if(counterSTT==0){
+                        alert("Chưa có dữ liệu học để tính điểm. Hãy nhập đầy đủ thông tin học sinh"); //alert request input student's infomation
+                    }else{
+
+                        //Exmple call table's CSS selector with Jquery
+                        //$("#demo").text($("tbody tr").eq(1).find('td').eq(5).html());
+                        //$("#demo").text($('table tr:eq(1) > td:eq(5)').html());
+                        //$("#demo").text($('table tr:nth-child(2)>td:nth-child(4)').html());
+                        //$("#demo").text($('tbody tr:nth-child(2)').children('td:nth-child(2)').html());
+                        //$("#demo").text($('tbody').children('tr').eq(1).children('td').eq(4).html());
+
+                        //Method 1:
+                        // $("#table tr").each(function(){
+                        //     var math = $(this).children("td").eq(2).html();
+                        //     var physical = $(this).children("td").eq(3).html();
+                        //     var chemistry = $(this).children("td").eq(4).html();
+                        //     var average = (parseFloat(math) + parseFloat(physical) + parseFloat(chemistry))/3;
+                        //     $(this).children("td").eq(5).html(average.toFixed(2));
+                        // });
+
+                        //Method 2:
+                        // for(let i = 0; i < counterSTT; i++){
+                        //     testScore.diemTB[i] = (testScore.math[i] + testScore.physical[i] + testScore.chemistry[i])/3;
+                        //     testScore.diemTB[i] = testScore.diemTB[i].toFixed(2);
+                        //     $("#table tr:eq("+(i+1)+") > td:eq(5)").html(testScore.diemTB[i]);
+                        // }
+                        
+                        //calculate and update average Score to table
+                        //Method 3:
+                        for(let i = 0; i < counterSTT; i++){
+                            var math = $("#table tr:eq("+(i+1)+") > td:eq(2)").html();
+                            var physical = $("#table tr:eq("+(i+1)+") > td:eq(3)").html();
+                            var chemistry = $("#table tr:eq("+(i+1)+") > td:eq(4)").html();
+                            var average = (parseFloat(math)+parseFloat(physical)+parseFloat(chemistry))/3;
+                            average = average.toFixed(2);
+                            testScore.diemTB[i] = average;
+
+                            $("#table tr:eq("+(i+1)+") > td:eq(5)").html(average);
+                        }
+                        
+                    }
+                }else{
+                    //select_flag is not zero that's mean feature as select and delete are being actived
+                    //inform that click button as "Hủy" to use another feature
+                    alert("Vui lòng bấm <Hủy> để sử dụng các chức năng khác");
+                }
+            });
+
+        /**
+        *description calculate student's average Score when button as "Xác định học sinh giỏi" is clicked
+        */
+            $("#identifyGoodStudent").click(function(){
+                //select_flag is zero that's mean feature as select and delete are not actived
+                if(select_flag==0){  
+                    //counter is zero that's mean table blank 
+                    if(counterSTT==0){
+                    alert("Chưa có dữ liệu để xác định học sinh giỏi. Hãy nhập đầy đủ thông tin học sinh"); //alert request input student's infomation
+                    
+                    }
+                    else{
+                        //identify good student with average score is greater than 8.0 and bold red color
+                        $("table tr").each(function(){
+                            var average = $(this).children("td").eq(5).html();
+                            if(average >= 8.0){
+                                $(this).css({"color":"red","font-weight":"bold"});
+                            }
+                        });
+                    }
+                }else{                    
+                    //select_flag is not zero that's mean feature as select and delete are being actived
+                    //inform that click button as "Hủy" to use another feature
+                    alert("Vui lòng bấm <Hủy> để sử dụng các chức năng khác");
+                }
+            });
+
+            /*
+            flag is set to 1 when button as "Chọn" is clicked that mean processing feature as select and delete are being actived
+            flag is set to 0 when button as "Xóa" is clicked that mean processing feature as delete is completed or button as "Hủy"  is clicked
+            */
+            var select_flag = 0;
+
+           $("#selectAndDelete").click(function(){
+               //counter is zero that's mean table blank
+                if(counterSTT==0){
+                    //alert table is blank
+                    alert("Chưa có dữ liệu để chọn.");
+                }else{ 
+                    //flag is set to 1 when button as "Chọn" is clicked that mean processing feature as select and delete are being actived                   
+                    if(select_flag==0){
+                        //Add element checkbox to select row which want to delete
+                        $("#table tr").each(function(){
+                            $(this).children("td").eq(0).append("<input type=\"checkbox\" id=\"cbx\">");                        
+                        }); 
+
+                        select_flag = 1;
+                        //button as "Chọn" will be changed name to "Xóa"
+                        $("#selectAndDelete").val("Xóa");
+                        //Show button as "Hủy"
+                        $("#cancel").show();
+
+                    }else{
+                        //TODO: delete student's information following index form checked checkbox
+                        $("#table tr").each(function(index,element){
+                            var checked = $(this).children("td").eq(0).children(":checkbox").is(':checked');
+                            if(checked){
+                                testScore.name.splice(index-1,1);
+                                testScore.math.splice(index-1,1);
+                                testScore.physical.splice(index-1,1);
+                                testScore.chemistry.splice(index-1,1);
+                                testScore.diemTB.splice(index-1,1);
+
+                                //remove row following checked checkbox
+                                $(this).remove();
+
+                                //TODO decrease counter to 1 when delete a student's information
+                                counterSTT--;
+                            }
+                                                  
+                        });
+
+                        //when processing feature is completed, flag is set to 0, checkbox will be removed, button as "Xóa" will be changed name to "Chọn", hide button "Hủy", update new index to table
+                        $("#table tr").each(function(index,element){
+                            if(index>0){
+                                $(this).children("td").eq(0).html(index);
+                            }
+                            $(this).children("td").eq(0).children(":checkbox").remove();                                                 
+                        });
+
+                        $("#selectAndDelete").val("Chọn");
+                        $("#cancel").hide();
+                        select_flag = 0;
+                         
+                    }
+
+                }
+
+            });
+
+            /*
+            flag is set to 0 when button as "Hủy"  is clicked, checkbox will be removed, button as "Xóa" will be changed name to "Chọn", hide button "Hủy"
+            */
+            $("#cancel").click(function(){
+                $("#table tr").each(function(){
+                   $(this).children("td").eq(0).children(":checkbox").remove();                        
+                }); 
+                $("#selectAndDelete").val("Chọn");
+                $(this).hide();
+                select_flag = 0;
+            });
+        });
+
+    </script>
+
+</body>
+</html>
